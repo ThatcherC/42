@@ -1572,6 +1572,24 @@ void InitSpacecraft(struct SCType *S)
             for(k=0;k<3;k++) CBL[j][k] = CBN[j][k];
          }
          MxM(CBL,Orb[S->RefOrb].CLN,CBN);
+
+         printf("(%s) CBN:\n",__FILE__);
+         for(int u=0; u<3; u++){
+           for (int v=0; v<3; v++){
+             printf("% .6f  ", CBN[u][v]);
+           }
+           printf("\n");
+         }
+
+         printf("(%s) Orb[S->RefOrb].CLN:\n",__FILE__);
+         for(int u=0; u<3; u++){
+           for (int v=0; v<3; v++){
+             printf("% .6f  ", Orb[S->RefOrb].CLN[u][v]);
+           }
+           printf("\n");
+         }
+
+
          C2Q(CBN,qbn);
       }
       else if (AttFrame == 'F') {
@@ -4113,8 +4131,60 @@ void InitSim(int argc, char **argv)
          if (Orb[Iorb].Exists) InitOrbit(&Orb[Iorb]);
       }
 
+      OrbitMotion();
+
+      //Necessary types for copied code below
+      struct OrbitType *O;
+      struct RegionType *R;
+
+      // Copied verbatim from Ephemerides() in 42ephem.c
+      /* .. Local Vertical frame tied to Reference Orbit */
+      for(Iorb=0;Iorb<Norb;Iorb++){
+         if (Orb[Iorb].Exists) {
+            O = &Orb[Iorb];
+            switch (O->Regime) {
+               case ORB_ZERO :
+                  /* L is aligned with N, wln is zero */
+                  for(i=0;i<3;i++) {
+                     for(j=0;j<3;j++) O->CLN[i][j] = 0.0;
+                     O->CLN[i][i] = 1.0;
+                     O->wln[i] = 0.0;
+                  }
+                  break;
+               case ORB_FLIGHT :
+                  /* L is East-North-Up */
+                  R = &Rgn[O->Region];
+                  for(i=0;i<3;i++) {
+                     O->PosN[i] = R->PosN[i];
+                     O->VelN[i] = R->VelN[i];
+                  }
+                  FindENU(O->PosN,World[O->World].w,O->CLN,O->wln);
+                  break;
+               case ORB_CENTRAL :
+                  /* L is LVLH */
+                  FindCLN(O->PosN,O->VelN,O->CLN,O->wln);
+                  break;
+               case ORB_THREE_BODY :
+                  /* L is Rotating Frame XYZ? */
+                  FindCLN(O->PosN,O->VelN,O->CLN,O->wln);
+                  break;
+               default :
+                  printf("Unknown Orbit Regime in Ephemerides.  Bailing out.\n");
+                  exit(1);
+            }
+            /* Update Formation Frame */
+            if (Frm[Iorb].FixedInFrame == 'L') {
+               MxM(Frm[Iorb].CL,O->CLN,Frm[Iorb].CN);
+            }
+            else {
+               MxMT(Frm[Iorb].CN,O->CLN,Frm[Iorb].CL);
+            }
+         }
+      }
+
+
       LoadTdrs();
-      
+
       RNG = CreateRandomProcess(1);
 
       LoadConstellations();

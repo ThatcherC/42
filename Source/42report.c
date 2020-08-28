@@ -248,6 +248,26 @@ void Report(void)
             //   FindTotalProjectedArea(&SC[0],ZAxis),
             //   FindTotalUnshadedProjectedArea(&SC[0],ZAxis));
             MxMT(SC[0].B[0].CN,SC[0].CLN,CBL);
+
+            #warning "Remove this log block before merge"
+            printf("(%s) CN:\n",__FILE__);
+            for(int u=0; u<3; u++){
+              for (int v=0; v<3; v++){
+                printf("% .6f  ", SC[0].B[0].CN[u][v]);
+              }
+              printf("\n");
+            }
+            #warning "Remove this log block before merge"
+            printf("(%s) CLN:\n",__FILE__);
+            for(int u=0; u<3; u++){
+              for (int v=0; v<3; v++){
+                printf("% .6f  ", SC[0].CLN[u][v]);
+              }
+              printf("\n");
+            }
+            printf("\n");
+
+
             C2A(123,CBL,&Roll,&Pitch,&Yaw);
             fprintf(RPYfile,"%lf %lf %lf\n",Roll*R2D,Pitch*R2D,Yaw*R2D);
             for(i=0;i<SC[0].Nw;i++) fprintf(Hwhlfile,"%lf ",SC[0].Whl[i].H);

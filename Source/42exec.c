@@ -368,6 +368,26 @@ int exec(int argc,char **argv)
             InitSpacecraft(&SC[Isc]);
          }
       }
+
+      #warning "Remove this log block before merge"
+      printf("(%s) CN:\n",__FILE__);
+      for(int u=0; u<3; u++){
+        for (int v=0; v<3; v++){
+          printf("% .6f  ", SC[0].B[0].CN[u][v]);
+        }
+        printf("\n");
+      }
+
+      #warning "Remove this log block before merge"
+      printf("(%s) CLN:\n",__FILE__);
+      for(int u=0; u<3; u++){
+        for (int v=0; v<3; v++){
+          printf("% .6f  ", SC[0].CLN[u][v]);
+        }
+        printf("\n");
+      }
+      printf("\n====== Begin Sim Steps =====\n");
+
       CmdInterpreter();
       InitInterProcessComm();
       #ifdef _USE_GUI_
