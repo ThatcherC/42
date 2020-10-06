@@ -677,7 +677,7 @@ void InitOrbit(struct OrbitType *O)
                FindJ2DriftParms(O->mu,World[O->World].J2,World[O->World].rad,O);
                O->RAAN0 = O->RAAN + O->RAANdot*(DynTime-O->Epoch);
                O->ArgP0 = O->ArgP + O->ArgPdot*(DynTime-O->Epoch);
-               O->tp = O->Epoch - TimeSincePeriapsis(O->MuPlusJ2,O->SLR,O->ecc,O->anom);
+               //O->tp = O->Epoch - TimeSincePeriapsis(O->MuPlusJ2,O->SLR,O->ecc,O->anom);
                Eph2RV(O->MuPlusJ2,O->SLR,O->ecc,O->inc,
                       O->RAAN,O->ArgP,O->Epoch-O->tp,
                       O->PosN,O->VelN,&O->anom);
@@ -690,7 +690,7 @@ void InitOrbit(struct OrbitType *O)
                O->J2Fh1 = 0.0;
                O->MeanMotion = sqrt(O->mu/(O->SMA*O->SMA*O->SMA));
                O->Period = TwoPi/O->MeanMotion;
-               O->tp = O->Epoch - TimeSincePeriapsis(O->mu,O->SLR,O->ecc,O->anom);
+               //O->tp = O->Epoch - TimeSincePeriapsis(O->mu,O->SLR,O->ecc,O->anom);
                Eph2RV(O->mu,O->SLR,O->ecc,O->inc,
                       O->RAAN,O->ArgP,O->Epoch-O->tp,
                       O->PosN,O->VelN,&O->anom);
