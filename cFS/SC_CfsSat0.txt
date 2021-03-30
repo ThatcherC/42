@@ -33,6 +33,7 @@ FALSE                         ! Include 2nd Order Flex Terms
 0.0  0.0  0.0                 ! Products of Inertia (xy,xz,yz)
 0.0  0.0  0.0                 ! Location of mass center, m
 0.0  0.0  0.0                 ! Constant Embedded Momentum (Nms)
+0.0  0.0  0.0                 ! Constant Embedded Magnetic Dipole Moment (A-m^2)
 MDLSat_MainBody.obj           ! Geometry Input File Name
 NONE                          ! Flex File Name
 ================================ Body 1 ================================
@@ -41,6 +42,7 @@ NONE                          ! Flex File Name
 0.0  0.0  0.0                 ! Products of Inertia (xy,xz,yz)
 0.0  0.0  0.0                 ! Location of mass center, m
 0.0  0.0  0.0                 ! Constant Embedded Momentum (Nms)
+0.0  0.0  0.0                 ! Constant Embedded Magnetic Dipole Moment (A-m^2)
 MDLSat_SolarArray.obj         ! Geometry Input File Name
 NONE                          ! Flex File Name
 ************************************************************************

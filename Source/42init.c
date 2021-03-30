@@ -1689,6 +1689,8 @@ void InitSpacecraft(struct SCType *S)
                   &B->cm[1],&B->cm[2],junk,&newline);
          fscanf(infile,"%lf %lf %lf %[^\n] %[\n]",&B->Hgyro[0],
                   &B->Hgyro[1],&B->Hgyro[2],junk,&newline);
+         fscanf(infile,"%lf %lf %lf %[^\n] %[\n]",&B->Mdipole[0],
+                  &B->Mdipole[1],&B->Mdipole[2],junk,&newline);
          fscanf(infile,"%s %[^\n] %[\n]",B->GeomFileName,junk,&newline);
          fscanf(infile,"%s %[^\n] %[\n]",B->FlexFileName,junk,&newline);
          if (S->RefPt == REFPT_JOINT)

@@ -63,6 +63,7 @@ struct BodyType {
    double c[3]; /* First mass moment about ref pt, expressed in B */
    double I[3][3]; /* Moment of Inertia, about ref pt, expressed in B frame */
    double Hgyro[3];  /* Constant embedded momentum, for CMGs and rotating instruments */
+   double Mdipole[3]; /* Constant embedded magnetic dipole moment, for residual dipoles and permanent magnets */
    double wn[3]; /* Angular Velocity of B expressed in B frame [[rad/sec]] [~=~] */
    double qn[4]; /* [~=~] */
    double vn[3]; /* velocity of B ref pt expressed in N frame */
