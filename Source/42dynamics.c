@@ -2721,7 +2721,7 @@ void OneBodyEOM(double *u, double *x, double *h,
       struct BodyType *B;
       struct DynType *D;
       struct FlexNodeType *FN;
-      double Hb[3],WhlTorq[3],wxH[3],Trq[3];
+      double Hb[3],DipoleTorq[3],WhlTorq[3],wxH[3],Trq[3];
       double Iinv[3][3];
       long i,j,k;
       long If,Nf,In;
@@ -2740,6 +2740,9 @@ void OneBodyEOM(double *u, double *x, double *h,
          }
       }
 
+/* .. Build dipole torque in B0 frame */
+      VxV(B->Mdipole,S->bvb,DipoleTorq);
+
 /* .. Build wheel torque in B0 frame */
       for (i=0;i<3;i++) {
          WhlTorq[i]=0.0;
@@ -2750,9 +2753,9 @@ void OneBodyEOM(double *u, double *x, double *h,
 
 /* .. Angular Rates */
       VxV(u,Hb,wxH);
-      Trq[0] = B->Trq[0]-wxH[0]+WhlTorq[0];
-      Trq[1] = B->Trq[1]-wxH[1]+WhlTorq[1];
-      Trq[2] = B->Trq[2]-wxH[2]+WhlTorq[2];
+      Trq[0] = B->Trq[0]-wxH[0]+WhlTorq[0]+DipoleTorq[0];
+      Trq[1] = B->Trq[1]-wxH[1]+WhlTorq[1]+DipoleTorq[1];
+      Trq[2] = B->Trq[2]-wxH[2]+WhlTorq[2]+DipoleTorq[2];
 
 /* .. Rigid Body EOM */
       MINV3(B->I,Iinv);
