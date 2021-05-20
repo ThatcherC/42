@@ -41,9 +41,6 @@ GSFCFLAG = -D _USE_GSFC_WATERMARK_
 STANDALONEFLAG =
 #STANDALONEFLAG = -D _AC_STANDALONE_
 
-NOS3FSWFLAG =
-#NOS3FSWFLAG = -D _ENABLE_NOS3_FSW_
-
 #GLFWFLAG = 
 GLFWFLAG = -D _USE_GLFW_
 
@@ -106,18 +103,15 @@ ifeq ($(42PLATFORM),__linux__)
       GUIOBJ = $(OBJ)42GlutGui.o $(OBJ)glkit.o
       #GLINC = -I /usr/include/
       GLINC = -I $(KITDIR)/include/GL/
-      LIBS = -lglut -lGLU -lGL -ldl -lm
+      LIBS = -lglut -lGLU -lGL -ldl -lm -lpthread
       LFLAGS = -L $(KITDIR)/GL/lib/
       ARCHFLAG =
    else
       GUIOBJ =
       GLINC =
-      LIBS = -ldl -lm
+      LIBS = -ldl -lm -lpthread
       LFLAGS =
       ARCHFLAG =
-   endif
-   ifneq ($(strip $(NOS3FSWFLAG)),)
-      LIBS += -lpthread
    endif
    EXENAME = 42
    CC = gcc
@@ -176,13 +170,13 @@ ifneq ($(strip $(GMSECFLAG)),)
    ACIPCOBJ = $(OBJ)AppReadFromFile.o $(OBJ)AppWriteToGmsec.o $(OBJ)AppReadFromGmsec.o \
       $(OBJ)AppWriteToSocket.o $(OBJ)AppReadFromSocket.o $(OBJ)AppWriteToFile.o
    SIMIPCOBJ = $(OBJ)SimWriteToFile.o $(OBJ)SimWriteToGmsec.o $(OBJ)SimWriteToSocket.o \
-      $(OBJ)SimReadFromFile.o $(OBJ)SimReadFromGmsec.o $(OBJ)SimReadFromSocket.o
+      $(OBJ)SimReadFromFile.o $(OBJ)SimReadFromGmsec.o $(OBJ)SimReadFromSocket.o 
 else
    GMSECOBJ =
    ACIPCOBJ = $(OBJ)AppReadFromFile.o \
       $(OBJ)AppWriteToSocket.o $(OBJ)AppReadFromSocket.o $(OBJ)AppWriteToFile.o
    SIMIPCOBJ = $(OBJ)SimWriteToFile.o $(OBJ)SimWriteToSocket.o \
-      $(OBJ)SimReadFromFile.o $(OBJ)SimReadFromSocket.o
+      $(OBJ)SimReadFromFile.o $(OBJ)SimReadFromSocket.o 
 endif
 
 42OBJ = $(OBJ)42main.o $(OBJ)42exec.o $(OBJ)42actuators.o $(OBJ)42cmd.o \
@@ -203,7 +197,7 @@ $(OBJ)AppWriteToSocket.o $(OBJ)AppReadFromSocket.o $(OBJ)AppWriteToFile.o
 #ANSIFLAGS = -Wstrict-prototypes -pedantic -ansi -Werror
 ANSIFLAGS =
 
-CFLAGS = -Wall -Wshadow -Wno-deprecated -g  $(ANSIFLAGS) $(GLINC) $(CINC) -I $(INC) -I $(KITINC) -I $(KITSRC) $(GMSECINC) -O0 $(ARCHFLAG) $(GUIFLAG) $(SHADERFLAG) $(CFDFLAG) $(FFTBFLAG) $(GSFCFLAG) $(GMSECFLAG) $(STANDALONEFLAG) $(NOS3FSWFLAG) $(GLFWFLAG)
+CFLAGS = -Wall -Wshadow -Wno-deprecated -g  $(ANSIFLAGS) $(GLINC) $(CINC) -I $(INC) -I $(KITINC) -I $(KITSRC) $(GMSECINC) -O0 $(ARCHFLAG) $(GUIFLAG) $(SHADERFLAG) $(CFDFLAG) $(FFTBFLAG) $(GSFCFLAG) $(GMSECFLAG) $(STANDALONEFLAG) $(GLFWFLAG)
 
 
 ##########################  Rules to link 42  #############################
@@ -332,6 +326,9 @@ $(OBJ)SimReadFromGmsec.o  : $(IPCSRC)SimReadFromGmsec.c $(INC)42.h $(INC)AcTypes
 
 $(OBJ)SimReadFromSocket.o  : $(IPCSRC)SimReadFromSocket.c $(INC)42.h $(INC)AcTypes.h
 	$(CC) $(CFLAGS) -c $(IPCSRC)SimReadFromSocket.c -o $(OBJ)SimReadFromSocket.o
+
+#$(OBJ)SimReadFromCmd.o  : $(IPCSRC)SimReadFromCmd.c $(INC)42.h $(INC)AcTypes.h
+#	$(CC) $(CFLAGS) -c $(IPCSRC)SimReadFromCmd.c -o $(OBJ)SimReadFromCmd.o
 
 $(OBJ)AppWriteToFile.o  : $(IPCSRC)AppWriteToFile.c $(INC)42.h $(INC)AcTypes.h
 	$(CC) $(CFLAGS) -c $(IPCSRC)AppWriteToFile.c -o $(OBJ)AppWriteToFile.o

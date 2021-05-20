@@ -75,7 +75,8 @@ long ClipEdgeAgainstPlane(double V1[3],double V2[3],
 void FindUnshadedAreas(struct SCType *S, double DirVecN[3])
 {
       struct SilEdgeType *SilEdge,SwapEdge,*SE;
-      struct SilVtxType *SilVtx,*InVtx;
+      struct SilVtxType *SilVtx;
+      struct SilVtxType *InVtx = NULL;
       struct SilVtxType *ClipVtx;
       struct BodyType *B;
       struct GeomType *G;
@@ -93,6 +94,7 @@ void FindUnshadedAreas(struct SCType *S, double DirVecN[3])
       ClipVtx = (struct SilVtxType *) calloc(1,sizeof(struct SilVtxType));
 
 /* .. Form Silhouette */
+      /* TODO: This handles self-shadowing.  Extend to shadowing by other S/C in same Orb */
       /* Form list of edges */
       SilNe = 0;
       for(Ib=0;Ib<S->Nb;Ib++) {
@@ -141,7 +143,7 @@ void FindUnshadedAreas(struct SCType *S, double DirVecN[3])
       /* Put list of edges in sequence */
       for(Ie=0;Ie<SilNe-1;Ie++) {
          for(Je=Ie+1;Je<SilNe;Je++) {
-            if (SilEdge[Je].Body == SilEdge[Ie].Body
+            if (SilEdge[Je].Body == SilEdge[Ie].Body 
              && SilEdge[Je].Iv1 == SilEdge[Ie].Iv2) {
                memcpy(&SwapEdge,&SilEdge[Je],sizeof(struct SilEdgeType));
                memcpy(&SilEdge[Je],&SilEdge[Ie+1],sizeof(struct SilEdgeType));
@@ -211,8 +213,11 @@ void FindUnshadedAreas(struct SCType *S, double DirVecN[3])
                }
 
                /* Clip Silhouette against Poly */
-               InVtx = (struct SilVtxType *) calloc(SilNv,sizeof(struct SilVtxType));
-               memcpy(InVtx,SilVtx,SilNv*sizeof(struct SilVtxType));
+               if (SilNv > 0) {
+                  free(InVtx);
+                  InVtx = (struct SilVtxType *) calloc(SilNv,sizeof(struct SilVtxType));
+                  memcpy(InVtx,SilVtx,SilNv*sizeof(struct SilVtxType));
+               }
                SilNin = SilNv;
                for(Iv=0;Iv<3;Iv++) {
                   if (SilNin > 2) {
@@ -320,7 +325,7 @@ void GravGradFrcTrq(struct SCType *S)
       double GravGradN[3][3],CGG[3][3],GravGradB[3][3],GGxI[3],GGxpn[3];
 
       O = &Orb[S->RefOrb];
-
+      
       if ((O->Regime == ORB_ZERO || O->Regime == ORB_FLIGHT) &&
            O->PolyhedronGravityEnabled) {
          W = &World[O->World];
@@ -351,7 +356,7 @@ void GravGradFrcTrq(struct SCType *S)
                }
             }
          }
-
+         
       }
       else {
          r = CopyUnitV(S->PosN,rhat);
@@ -401,9 +406,9 @@ void J2Force(struct SCType *S, struct OrbitType *O, double FrcN[3])
 {
       double Fh;
       long i;
-
+      
       Fh = S->mass*O->J2Fh1*sin(O->ArgP+O->anom);
-
+      
       for(i=0;i<3;i++) FrcN[i] = -Fh*S->CLN[1][i];
 }
 /**********************************************************************/
